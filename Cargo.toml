@@ -1,0 +1,12 @@
+[package]
+name = "expected"
+version = "0.0.0"
+publish = false
+authors = ["Yusuke Sasaki <yusuke.sasaki.nuem@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+scoped-tls = "1"
+
+[dev-dependencies]
+maybe-unwind = "0.1"
