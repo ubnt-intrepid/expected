@@ -51,7 +51,29 @@ impl fmt::Display for Disappoint {
     }
 }
 
-/// Show an expectation that the specified conditional expression is true.
+impl Disappoint {
+    #[inline]
+    pub fn payload(&self) -> &str {
+        &*self.payload
+    }
+
+    #[inline]
+    pub fn file(&self) -> &str {
+        self.file
+    }
+
+    #[inline]
+    pub fn line(&self) -> u32 {
+        self.line
+    }
+
+    #[inline]
+    pub fn column(&self) -> u32 {
+        self.column
+    }
+}
+
+/// Declare an expectation that the specified conditional expression is true.
 ///
 /// Unlike `assert!` in the standard library, this macro does not panic
 /// when the condition is not satisfied. Instead, it will store the information
@@ -61,8 +83,18 @@ impl fmt::Display for Disappoint {
 macro_rules! expect {
     ($cond:expr $(,)?) => {
         if !$cond {
-            $crate::add_disappointment(
+            $crate::disappoint(
                 concat!("expectation disappointed: ", stringify!($cond)).into(),
+                file!(),
+                line!(),
+                column!(),
+            );
+        }
+    };
+    ($cond:expr, $($arg:tt)+) => {
+        if !$cond {
+            $crate::disappoint(
+                format!($($arg)+),
                 file!(),
                 line!(),
                 column!(),
@@ -71,8 +103,51 @@ macro_rules! expect {
     };
 }
 
+/// Declare an expectation that the specified values are equal.
+#[macro_export]
+macro_rules! expect_eq {
+    ($lhs:expr, $rhs:expr $(,)?) => {
+        match (&$lhs, &$rhs) {
+            (lhs, rhs) => {
+                if !(*lhs == *rhs) {
+                    $crate::disappoint(
+                        format!(
+                            r#"expectation disappointed: `(left == right)`
+  left: `{:?}`,
+ right: `{:?}`"#,
+                            &*lhs, &*rhs
+                        ),
+                        file!(),
+                        line!(),
+                        column!(),
+                    );
+                }
+            }
+        }
+    };
+    ($lhs:expr, $rhs:expr, $($arg:tt)+) => {
+        match (&$lhs, &$rhs) {
+            (lhs, rhs) => {
+                if !(*lhs == *rhs) {
+                    $crate::disappoint(
+                        format!(
+                            r#"expectation disappointed: `(left == right)`
+  left: `{:?}`,
+ right: `{:?}`: {}"#,
+                            &*lhs, &*rhs, format_args!($($arg)+)
+                        ),
+                        file!(),
+                        line!(),
+                        column!(),
+                    );
+                }
+            }
+        }
+    };
+}
+
 #[doc(hidden)] // private API
-pub fn add_disappointment(payload: String, file: &'static str, line: u32, column: u32) {
+pub fn disappoint(payload: String, file: &'static str, line: u32, column: u32) {
     if !DISAPPOINTS.is_set() {
         eprintln!("warning: expect!() should be invoked inside of `expected`.");
         return;

@@ -1,6 +1,6 @@
 #![allow(clippy::assertions_on_constants, clippy::eq_op, clippy::identity_op)]
 
-use expected::{expect, expected};
+use expected::{expect, expect_eq, expected};
 use maybe_unwind::maybe_unwind;
 use std::sync::Once;
 
@@ -61,4 +61,15 @@ fn with_futures() {
         .expected(),
     );
     assert_eq!(disappoints.len(), 2);
+}
+
+#[test]
+#[ignore]
+fn smoke_macros() {
+    let _ = expected(|| {
+        expect!(1 + 1 == 3);
+        expect!(1 + 1 == 3, "1 + 1 must be equal to {}", 2);
+        expect_eq!(1 + 1, 3);
+        expect_eq!(1 + 1, 3, "1 + 1 must be equal to {}", 2);
+    });
 }
