@@ -1,6 +1,14 @@
+use cfg_if::cfg_if;
 use scoped_tls::scoped_thread_local;
 use std::cell::RefCell;
 use std::fmt;
+
+cfg_if! {
+    if #[cfg(feature = "futures")] {
+        mod futures;
+        pub use futures::{FutureExpectedExt, Expected};
+    }
+}
 
 /// A set of disappoints occurred during an execution of `asseverate`.
 #[derive(Debug)]

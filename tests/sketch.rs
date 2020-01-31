@@ -45,3 +45,20 @@ fn with_assertions() {
     let _unwind = res.unwrap_err();
     assert_eq!(disappoints.len(), 1);
 }
+
+#[cfg(feature = "futures")]
+#[test]
+fn with_futures() {
+    use expected::FutureExpectedExt as _;
+    use futures_executor::block_on;
+
+    let ((), disappoints) = block_on(
+        async {
+            expect!(1 + 0 == 2);
+            expect!(1 + 1 == 2);
+            expect!(1 - 1 == -1);
+        }
+        .expected(),
+    );
+    assert_eq!(disappoints.len(), 2);
+}
