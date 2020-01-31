@@ -1,6 +1,7 @@
+mod context;
+
+use crate::context::Context;
 use cfg_if::cfg_if;
-use scoped_tls::scoped_thread_local;
-use std::cell::RefCell;
 use std::fmt;
 
 cfg_if! {
@@ -148,26 +149,17 @@ macro_rules! expect_eq {
 
 #[doc(hidden)] // private API
 pub fn disappoint(payload: String, file: &'static str, line: u32, column: u32) {
-    if !DISAPPOINTS.is_set() {
+    Context::with(|ctx| {
+        ctx.add_disappoint(Disappoint {
+            payload,
+            file,
+            line,
+            column,
+        });
+    })
+    .unwrap_or_else(|| {
         eprintln!("warning: expect!() should be invoked inside of `expected`.");
-        return;
-    }
-
-    DISAPPOINTS.with(|disappoints| {
-        if let Ok(mut disappoints) = disappoints.try_borrow_mut() {
-            disappoints.push(Disappoint {
-                payload,
-                file,
-                line,
-                column,
-            });
-        } else {
-        }
     });
-}
-
-scoped_thread_local! {
-    static DISAPPOINTS: RefCell<Vec<Disappoint>>
 }
 
 /// Run the provided closure and checks to see if all expectation have been satisfied.
@@ -175,9 +167,7 @@ pub fn expected<F, R>(f: F) -> (R, Disappoints)
 where
     F: FnOnce() -> R,
 {
-    let disappoints = RefCell::new(vec![]);
-    let value = DISAPPOINTS.set(&disappoints, f);
-
-    let disappoints = disappoints.into_inner();
-    (value, Disappoints(disappoints))
+    let mut ctx = Context::default();
+    let value = ctx.set(f);
+    (value, ctx.take_disappoints())
 }

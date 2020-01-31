@@ -1,17 +1,17 @@
-use crate::{Disappoint, Disappoints, DISAPPOINTS};
+use crate::{context::Context, Disappoints};
 use futures_core::{
     future::Future,
     task::{self, Poll},
 };
 use pin_project::pin_project;
-use std::{cell::RefCell, pin::Pin};
+use std::pin::Pin;
 
 #[pin_project]
 #[derive(Debug)]
 pub struct Expected<Fut> {
     #[pin]
     fut: Fut,
-    disappoints: Option<RefCell<Vec<Disappoint>>>,
+    ctx: Context,
 }
 
 impl<Fut> Future for Expected<Fut>
@@ -24,12 +24,13 @@ where
     fn poll(self: Pin<&mut Self>, cx: &mut task::Context<'_>) -> Poll<Self::Output> {
         let me = self.project();
         let fut = me.fut;
-        let res = match DISAPPOINTS.set(me.disappoints.as_ref().unwrap(), || fut.poll(cx)) {
+        let ctx = me.ctx;
+        let res = match ctx.set(|| fut.poll(cx)) {
             Poll::Pending => return Poll::Pending,
             Poll::Ready(res) => res,
         };
-        let disappoints = me.disappoints.take().unwrap().into_inner();
-        Poll::Ready((res, Disappoints(disappoints)))
+        let disappoints = ctx.take_disappoints();
+        Poll::Ready((res, disappoints))
     }
 }
 
@@ -37,7 +38,7 @@ pub trait FutureExpectedExt: Future + Sized {
     fn expected(self) -> Expected<Self> {
         Expected {
             fut: self,
-            disappoints: Some(RefCell::new(vec![])),
+            ctx: Context::default(),
         }
     }
 }

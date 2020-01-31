@@ -10,7 +10,6 @@ all-features = true
 
 [dependencies]
 cfg-if = "0.1"
-scoped-tls = "1"
 futures-core = { version = "0.3", optional = true }
 pin-project = { version = "0.4", optional = true }
 
