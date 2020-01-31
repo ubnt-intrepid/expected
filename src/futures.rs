@@ -6,6 +6,9 @@ use futures_core::{
 use pin_project::pin_project;
 use std::pin::Pin;
 
+/// A future for the [`expected`] method.
+///
+/// [`expected`]: ./trait.FutureExpectedExt.html#method.expected
 #[pin_project]
 #[derive(Debug)]
 pub struct Expected<Fut> {
@@ -34,7 +37,10 @@ where
     }
 }
 
+/// An extension trait for `Future`s that provides an adaptor for tracking
+/// that all expectations are satisfied.
 pub trait FutureExpectedExt: Future + Sized {
+    /// See that all expectations are satisfied.
     fn expected(self) -> Expected<Self> {
         Expected {
             fut: self,

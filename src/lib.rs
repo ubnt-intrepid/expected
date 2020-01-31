@@ -1,9 +1,28 @@
 /*!
 An assertion utility focused on unit testing.
+
+# Example
+
+```
+use expected::{expect_eq, expected};
+
+let name = "Alice";
+let age = 14;
+
+let (_, disappoints) = expected(|| {
+    expect_eq!(name, "Alice");
+    expect_eq!(age, 24);
+});
+
+if !disappoints.is_empty() {
+    eprintln!("{}", disappoints);
+}
+```
+
 !*/
 
 #![doc(html_root_url = "https://docs.rs/expected/0.0.1")]
-//#![deny(missing_docs)]
+#![deny(missing_docs)]
 #![forbid(clippy::todo, clippy::unimplemented)]
 #![cfg_attr(test, deny(warnings))]
 

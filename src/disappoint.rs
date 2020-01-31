@@ -1,6 +1,6 @@
 use std::{any::Any, fmt};
 
-/// A set of disappoints occurred during an execution of `asseverate`.
+/// A set of `Disappoint`s occurred during an execution of `expected`.
 #[derive(Debug)]
 pub struct Disappoints(pub(crate) Vec<Disappoint>);
 
@@ -23,6 +23,7 @@ impl fmt::Display for Disappoints {
     }
 }
 
+/// A struct providing information about a disappointing expectation.
 #[derive(Debug)]
 pub struct Disappoint {
     payload: Box<dyn Any + Send + 'static>,
@@ -64,21 +65,28 @@ impl Disappoint {
             .or_else(|| payload.downcast_ref::<String>().map(|s| s.as_str()))
     }
 
+    /// Return the payload associated with the disappointment.
+    ///
+    /// The concrete type of payloads is commonly either of `&'static str`
+    /// or `String`, but it may change in the future version.
     #[inline]
     pub fn payload(&self) -> &(dyn Any + Send + 'static) {
         &*self.payload
     }
 
+    /// Return the name of the source file from which the disappointment originated.
     #[inline]
     pub fn file(&self) -> &str {
         self.file
     }
 
+    /// Return the line number from which the disappointment originated.
     #[inline]
     pub fn line(&self) -> u32 {
         self.line
     }
 
+    /// Return the column from which the disappointment originated.
     #[inline]
     pub fn column(&self) -> u32 {
         self.column
