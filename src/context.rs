@@ -1,4 +1,4 @@
-use crate::{Disappoint, Disappoints};
+use crate::disappoint::{Disappoint, Disappoints};
 use std::{cell::Cell, ptr::NonNull};
 
 #[derive(Debug, Default)]
@@ -38,10 +38,7 @@ impl Context {
         let _reset = SetOnDrop(ctx_ptr);
         match ctx_ptr {
             Some(mut ctx) => unsafe { Some(f(ctx.as_mut())) },
-            None => {
-                eprintln!("warning: expect!() should be invoked inside of `expected`.");
-                None
-            }
+            None => None,
         }
     }
 
