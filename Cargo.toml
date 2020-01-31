@@ -15,6 +15,7 @@ pin-project = { version = "0.4", optional = true }
 
 [dev-dependencies]
 futures-executor = "0.3"
+futures-test = "0.3"
 maybe-unwind = "0.1"
 
 [features]

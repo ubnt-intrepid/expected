@@ -51,11 +51,13 @@ fn with_assertions() {
 fn with_futures() {
     use expected::FutureExpectedExt as _;
     use futures_executor::block_on;
+    use futures_test::future::FutureTestExt as _;
 
     let ((), disappoints) = block_on(
         async {
             expect!(1 + 0 == 2);
             expect!(1 + 1 == 2);
+            async {}.pending_once().await;
             expect!(1 - 1 == -1);
         }
         .expected(),
