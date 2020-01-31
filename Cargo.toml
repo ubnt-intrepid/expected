@@ -33,7 +33,7 @@ cargo-husky = { version = "1", features = [ "precommit-hook", "run-cargo-fmt" ] 
 futures-executor = "0.3"
 futures-test = "0.3"
 maybe-unwind = "0.1"
-version-sync = "0.8"
+version-sync = { git = "https://github.com/mgeisler/version-sync.git", rev = "8d9ce91" }
 
 [features]
 default = [ "futures" ]
