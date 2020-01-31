@@ -1,4 +1,4 @@
-use std::fmt;
+use std::{any::Any, fmt};
 
 /// A set of disappoints occurred during an execution of `asseverate`.
 #[derive(Debug)]
@@ -25,7 +25,7 @@ impl fmt::Display for Disappoints {
 
 #[derive(Debug)]
 pub struct Disappoint {
-    payload: String,
+    payload: Box<dyn Any + Send + 'static>,
     file: &'static str,
     line: u32,
     column: u32,
@@ -33,17 +33,23 @@ pub struct Disappoint {
 
 impl fmt::Display for Disappoint {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let payload = self.payload_str().unwrap_or("Box<dyn Any>");
         writeln!(
             f,
             "[{}:{}:{}] {}",
-            self.file, self.line, self.column, self.payload,
+            self.file, self.line, self.column, payload,
         )
     }
 }
 
 impl Disappoint {
     #[inline]
-    pub(crate) fn new(payload: String, file: &'static str, line: u32, column: u32) -> Self {
+    pub(crate) fn new(
+        payload: Box<dyn Any + Send>,
+        file: &'static str,
+        line: u32,
+        column: u32,
+    ) -> Self {
         Self {
             payload,
             file,
@@ -52,8 +58,14 @@ impl Disappoint {
         }
     }
 
+    pub(crate) fn payload_str(&self) -> Option<&str> {
+        let payload = self.payload();
+        (payload.downcast_ref::<&str>().copied())
+            .or_else(|| payload.downcast_ref::<String>().map(|s| s.as_str()))
+    }
+
     #[inline]
-    pub fn payload(&self) -> &str {
+    pub fn payload(&self) -> &(dyn Any + Send + 'static) {
         &*self.payload
     }
 

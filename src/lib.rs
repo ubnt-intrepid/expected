@@ -34,7 +34,12 @@ where
 
 #[doc(hidden)] // private API
 #[inline(never)]
-pub fn disappoint(payload: String, file: &'static str, line: u32, column: u32) {
+pub fn disappoint(
+    payload: Box<dyn std::any::Any + Send>,
+    file: &'static str,
+    line: u32,
+    column: u32,
+) {
     Context::with(|ctx| {
         ctx.add_disappoint(Disappoint::new(payload, file, line, column));
     })

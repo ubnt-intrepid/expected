@@ -9,7 +9,7 @@ macro_rules! expect {
     ($cond:expr $(,)?) => {
         if !$cond {
             $crate::disappoint(
-                concat!("expectation disappointed: ", stringify!($cond)).into(),
+                Box::new(concat!("expectation disappointed: ", stringify!($cond))),
                 file!(),
                 line!(),
                 column!(),
@@ -19,7 +19,7 @@ macro_rules! expect {
     ($cond:expr, $($arg:tt)+) => {
         if !$cond {
             $crate::disappoint(
-                format!($($arg)+),
+                Box::new(format!($($arg)+)),
                 file!(),
                 line!(),
                 column!(),
@@ -36,12 +36,12 @@ macro_rules! expect_eq {
             (lhs, rhs) => {
                 if !(*lhs == *rhs) {
                     $crate::disappoint(
-                        format!(
+                        Box::new(format!(
                             r#"expectation disappointed: `(left == right)`
   left: `{:?}`,
  right: `{:?}`"#,
                             &*lhs, &*rhs
-                        ),
+                        )),
                         file!(),
                         line!(),
                         column!(),
@@ -55,12 +55,12 @@ macro_rules! expect_eq {
             (lhs, rhs) => {
                 if !(*lhs == *rhs) {
                     $crate::disappoint(
-                        format!(
+                        Box::new(format!(
                             r#"expectation disappointed: `(left == right)`
   left: `{:?}`,
  right: `{:?}`: {}"#,
                             &*lhs, &*rhs, format_args!($($arg)+)
-                        ),
+                        )),
                         file!(),
                         line!(),
                         column!(),
