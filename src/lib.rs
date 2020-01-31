@@ -1,3 +1,12 @@
+/*!
+An assertion utility focused on unit testing.
+!*/
+
+#![doc(html_root_url = "https://docs.rs/expected/0.0.1")]
+//#![deny(missing_docs)]
+#![forbid(clippy::todo, clippy::unimplemented)]
+#![cfg_attr(test, deny(warnings))]
+
 mod context;
 
 use crate::context::Context;

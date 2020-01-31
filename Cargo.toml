@@ -1,9 +1,24 @@
 [package]
 name = "expected"
-version = "0.0.0"
+version = "0.0.1"
 publish = false
+description = """
+An assertion utility focused on unit testing.
+"""
 authors = ["Yusuke Sasaki <yusuke.sasaki.nuem@gmail.com>"]
+license = "MIT OR Apache-2.0"
 edition = "2018"
+repository = "https://github.com/ubnt-intrepid/expected.git"
+readme = "README.md"
+
+include = [
+  "/src/**/*.rs",
+  "/tests/**/*.rs",
+  "/Cargo.toml",
+  "/CHANGELOG.md",
+  "/LICENSE*",
+  "/README.md",
+]
 
 [package.metadata.docs.rs]
 all-features = true
@@ -14,9 +29,11 @@ futures-core = { version = "0.3", optional = true }
 pin-project = { version = "0.4", optional = true }
 
 [dev-dependencies]
+cargo-husky = { version = "1", features = [ "precommit-hook", "run-cargo-fmt" ] }
 futures-executor = "0.3"
 futures-test = "0.3"
 maybe-unwind = "0.1"
+version-sync = "0.8"
 
 [features]
 default = [ "futures" ]

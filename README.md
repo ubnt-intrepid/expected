@@ -3,16 +3,15 @@
 </h1>
 <div align="center">
   <strong>
-    A variant of assertion macros focused on the unit testing.
+    An assertion utility focused on unit testing.
   </strong>
 </div>
 
 <br />
 
-<!--
 <div align="center">
-  <a href="https://crates.io/crates/maybe-unwind">
-    <img src="https://img.shields.io/crates/v/maybe-unwind.svg?style=flat-square"
+  <a href="https://crates.io/crates/expected">
+    <img src="https://img.shields.io/crates/v/expected.svg?style=flat-square"
          alt="crates.io"
     />
   </a>
@@ -21,12 +20,11 @@
          alt="rust toolchain"
     />
   </a>
-  <a href="https://docs.rs/maybe-unwind">
+  <a href="https://docs.rs/expected">
     <img src="https://img.shields.io/badge/docs-latest-blue.svg?style=flat-square"
          alt="docs.rs" />
   </a>
 </div>
--->
 
 <br />
 
