@@ -9,6 +9,7 @@ on:
 env:
   CARGO_HUSKY_DONT_INSTALL_HOOKS: true
   CARGO_TERM_VERBOSE: true
+  RUST_BACKTRACE: full
 
 jobs:
   Test:
