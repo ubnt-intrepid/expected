@@ -21,7 +21,7 @@ impl<Fut> Future for Expected<Fut>
 where
     Fut: Future,
 {
-    type Output = (Fut::Output, Disappoints);
+    type Output = (Fut::Output, Option<Disappoints>);
 
     #[inline]
     fn poll(self: Pin<&mut Self>, cx: &mut task::Context<'_>) -> Poll<Self::Output> {
@@ -63,9 +63,9 @@ pub trait FutureExpectedExt: Future + Sized {
     /// };
     ///
     /// let (_, disappoints) = fut.expected().await;
-    /// # assert_eq!(disappoints.len(), 1);
     ///
-    /// if !disappoints.is_empty() {
+    /// if let Some(disappoints) = disappoints {
+    /// #   assert_eq!(disappoints.len(), 1);
     ///     eprintln!("{}", disappoints);
     /// }
     /// # });

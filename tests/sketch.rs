@@ -14,7 +14,7 @@ fn no_disappoints() {
     let ((), disappoints) = expected(|| {
         expect!(1 + 1 == 2);
     });
-    assert_eq!(disappoints.len(), 0);
+    assert!(disappoints.is_none());
 }
 
 #[test]
@@ -22,6 +22,7 @@ fn has_one_disappoint() {
     let ((), disappoints) = expected(|| {
         expect!(1 + 2 == 2);
     });
+    let disappoints = disappoints.unwrap();
     assert_eq!(disappoints.len(), 1);
 }
 
@@ -32,6 +33,7 @@ fn has_more_disappoints() {
         expect!(1 + 1 == 2);
         expect!(1 - 1 == -1);
     });
+    let disappoints = disappoints.unwrap();
     assert_eq!(disappoints.len(), 2);
 }
 
@@ -48,6 +50,7 @@ fn with_assertions() {
         })
     });
     let _unwind = res.unwrap_err();
+    let disappoints = disappoints.unwrap();
     assert_eq!(disappoints.len(), 1);
 }
 
@@ -67,6 +70,7 @@ fn with_futures() {
         }
         .expected(),
     );
+    let disappoints = disappoints.unwrap();
     assert_eq!(disappoints.len(), 2);
 }
 

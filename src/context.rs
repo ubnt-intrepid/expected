@@ -3,7 +3,7 @@ use std::{cell::Cell, ptr::NonNull};
 
 #[derive(Debug, Default)]
 pub(crate) struct Context {
-    disappoints: Vec<Disappoint>,
+    disappoints: Option<Vec<Disappoint>>,
 }
 
 thread_local! {
@@ -43,10 +43,12 @@ impl Context {
     }
 
     pub(crate) fn add_disappoint(&mut self, disappoint: Disappoint) {
-        self.disappoints.push(disappoint);
+        self.disappoints
+            .get_or_insert_with(Default::default)
+            .push(disappoint);
     }
 
-    pub(crate) fn take_disappoints(&mut self) -> Disappoints {
-        Disappoints(std::mem::replace(&mut self.disappoints, vec![]))
+    pub(crate) fn take_disappoints(&mut self) -> Option<Disappoints> {
+        self.disappoints.take().map(Disappoints)
     }
 }

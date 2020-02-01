@@ -39,16 +39,11 @@ use crate::context::Context;
 ///     // ...
 /// });
 ///
-/// if disappoints.is_empty() {
+/// if let Some(disappoints) = disappoints {
 ///     eprintln!("{}", disappoints);
 /// }
 /// ```
-///
-/// ```txt
-/// one or more expectations have been disappointed:
-/// [src/lib.rs:8:5] expectation disappointed: age == 18
-/// ```
-pub fn expected<F, R>(f: F) -> (R, Disappoints)
+pub fn expected<F, R>(f: F) -> (R, Option<Disappoints>)
 where
     F: FnOnce() -> R,
 {

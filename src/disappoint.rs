@@ -2,7 +2,7 @@ use std::{any::Any, fmt};
 
 /// A set of `Disappoint`s occurred during an execution of `expected`.
 #[derive(Debug)]
-pub struct Disappoints(pub(crate) Vec<Disappoint>);
+pub struct Disappoints(pub Vec<Disappoint>);
 
 impl std::ops::Deref for Disappoints {
     type Target = [Disappoint];
@@ -20,6 +20,26 @@ impl fmt::Display for Disappoints {
             writeln!(f, "{}", disappoint)?;
         }
         Ok(())
+    }
+}
+
+impl IntoIterator for Disappoints {
+    type Item = Disappoint;
+    type IntoIter = std::vec::IntoIter<Disappoint>;
+
+    #[inline]
+    fn into_iter(self) -> Self::IntoIter {
+        self.0.into_iter()
+    }
+}
+
+impl<'a> IntoIterator for &'a Disappoints {
+    type Item = &'a Disappoint;
+    type IntoIter = std::slice::Iter<'a, Disappoint>;
+
+    #[inline]
+    fn into_iter(self) -> Self::IntoIter {
+        self.0.iter()
     }
 }
 
