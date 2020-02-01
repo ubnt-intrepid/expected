@@ -40,7 +40,35 @@ where
 /// An extension trait for `Future`s that provides an adaptor for tracking
 /// that all expectations are satisfied.
 pub trait FutureExpectedExt: Future + Sized {
-    /// See that all expectations are satisfied.
+    /// See that all expectations are satisfied until the future is completed.
+    ///
+    /// # Example
+    ///
+    /// ```
+    /// use expected::{expect, expect_eq};
+    /// use expected::FutureExpectedExt as _;
+    /// # use futures_test::future::FutureTestExt as _;
+    ///
+    /// # futures_executor::block_on(async {
+    /// let name = "Alice";
+    /// let country = "Wonderland";
+    /// let age = 14;
+    ///
+    /// let fut = async {
+    ///     expect_eq!(name, "Alice");
+    ///     expect!(country.contains("land"));
+    /// #   async {}.pending_once().await;
+    ///     // ...
+    ///     expect!(age >= 20);
+    /// };
+    ///
+    /// let (_, disappoints) = fut.expected().await;
+    /// # assert_eq!(disappoints.len(), 1);
+    ///
+    /// if !disappoints.is_empty() {
+    ///     eprintln!("{}", disappoints);
+    /// }
+    /// # });
     fn expected(self) -> Expected<Self> {
         Expected {
             fut: self,

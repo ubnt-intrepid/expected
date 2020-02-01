@@ -1,24 +1,6 @@
 /*!
-An assertion utility focused on unit testing.
-
-# Example
-
-```
-use expected::{expect_eq, expected};
-
-let name = "Alice";
-let age = 14;
-
-let (_, disappoints) = expected(|| {
-    expect_eq!(name, "Alice");
-    expect_eq!(age, 24);
-});
-
-if !disappoints.is_empty() {
-    eprintln!("{}", disappoints);
-}
-```
-
+A variant of assertion macros that does not panic and continues test cases
+whenever assertions are passed or not.
 !*/
 
 #![doc(html_root_url = "https://docs.rs/expected/0.0.1")]
@@ -42,6 +24,30 @@ pub use crate::disappoint::{Disappoint, Disappoints};
 use crate::context::Context;
 
 /// Run the provided closure and checks to see if all expectation have been satisfied.
+///
+/// # Example
+///
+/// ```
+/// use expected::{expected, expect};
+///
+/// let name = "Alice";
+/// let age = 14;
+///
+/// let ((), disappoints) = expected(|| {
+///     expect!(name == "Alice");
+///     expect!(age == 18);
+///     // ...
+/// });
+///
+/// if disappoints.is_empty() {
+///     eprintln!("{}", disappoints);
+/// }
+/// ```
+///
+/// ```txt
+/// one or more expectations have been disappointed:
+/// [src/lib.rs:8:5] expectation disappointed: age == 18
+/// ```
 pub fn expected<F, R>(f: F) -> (R, Disappoints)
 where
     F: FnOnce() -> R,
