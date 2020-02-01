@@ -67,10 +67,33 @@
 <span id="67">67</span>
 <span id="68">68</span>
 <span id="69">69</span>
+<span id="70">70</span>
+<span id="71">71</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="doccomment">/*!
-A variant of assertion macros that does not panic and continues test cases
-whenever assertions are passed or not.
+An assertion utility focused on unit testing.
+
+This library provides the variant of assertion macros that does not panic
+and continues test cases whenever assertions are passed or not.
+
+# Example
+
+```
+use expected::{expected, expect};
+
+let name = &quot;Alice&quot;;
+let age = 14;
+
+let ((), disappoints) = expected(|| {
+    expect!(name == &quot;Alice&quot;);
+    expect!(age == 18);
+    // ...
+});
+
+if let Some(disappoints) = disappoints {
+    eprintln!(&quot;{}&quot;, disappoints);
+}
+```
 !*/</span>
 
 <span class="attribute">#![<span class="ident">doc</span>(<span class="ident">html_root_url</span> <span class="op">=</span> <span class="string">&quot;https://docs.rs/expected/0.0.1&quot;</span>)]</span>
@@ -94,25 +117,6 @@ whenever assertions are passed or not.
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">context</span>::<span class="ident">Context</span>;
 
 <span class="doccomment">/// Run the provided closure and checks to see if all expectation have been satisfied.</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// # Example</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// ```</span>
-<span class="doccomment">/// use expected::{expected, expect};</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let name = &quot;Alice&quot;;</span>
-<span class="doccomment">/// let age = 14;</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// let ((), disappoints) = expected(|| {</span>
-<span class="doccomment">///     expect!(name == &quot;Alice&quot;);</span>
-<span class="doccomment">///     expect!(age == 18);</span>
-<span class="doccomment">///     // ...</span>
-<span class="doccomment">/// });</span>
-<span class="doccomment">///</span>
-<span class="doccomment">/// if let Some(disappoints) = disappoints {</span>
-<span class="doccomment">///     eprintln!(&quot;{}&quot;, disappoints);</span>
-<span class="doccomment">/// }</span>
-<span class="doccomment">/// ```</span>
 <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">expected</span><span class="op">&lt;</span><span class="ident">F</span>, <span class="ident">R</span><span class="op">&gt;</span>(<span class="ident">f</span>: <span class="ident">F</span>) <span class="op">-</span><span class="op">&gt;</span> (<span class="ident">R</span>, <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="ident">Disappoints</span><span class="op">&gt;</span>)
 <span class="kw">where</span>
     <span class="ident">F</span>: <span class="ident">FnOnce</span>() <span class="op">-</span><span class="op">&gt;</span> <span class="ident">R</span>,
