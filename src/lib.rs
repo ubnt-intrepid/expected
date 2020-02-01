@@ -1,6 +1,27 @@
 /*!
-A variant of assertion macros that does not panic and continues test cases
-whenever assertions are passed or not.
+An assertion utility focused on unit testing.
+
+This library provides the variant of assertion macros that does not panic
+and continues test cases whenever assertions are passed or not.
+
+# Example
+
+```
+use expected::{expected, expect};
+
+let name = "Alice";
+let age = 14;
+
+let ((), disappoints) = expected(|| {
+    expect!(name == "Alice");
+    expect!(age == 18);
+    // ...
+});
+
+if let Some(disappoints) = disappoints {
+    eprintln!("{}", disappoints);
+}
+```
 !*/
 
 #![doc(html_root_url = "https://docs.rs/expected/0.0.1")]
@@ -24,25 +45,6 @@ pub use crate::disappoint::{Disappoint, Disappoints};
 use crate::context::Context;
 
 /// Run the provided closure and checks to see if all expectation have been satisfied.
-///
-/// # Example
-///
-/// ```
-/// use expected::{expected, expect};
-///
-/// let name = "Alice";
-/// let age = 14;
-///
-/// let ((), disappoints) = expected(|| {
-///     expect!(name == "Alice");
-///     expect!(age == 18);
-///     // ...
-/// });
-///
-/// if let Some(disappoints) = disappoints {
-///     eprintln!("{}", disappoints);
-/// }
-/// ```
 pub fn expected<F, R>(f: F) -> (R, Option<Disappoints>)
 where
     F: FnOnce() -> R,

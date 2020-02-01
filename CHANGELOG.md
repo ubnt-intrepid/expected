@@ -6,6 +6,10 @@ This format is based on [Keep a Changelog], and this project adheres to [Semanti
 
 ## [Unreleased]
 
+## [0.0.1] (2020-02-01)
+
+* initial release
+
 <!-- links -->
 
 [Unreleased]: https://github.com/ubnt-intrepid/maybe-unwind/compare/v0.0.1...HEAD
