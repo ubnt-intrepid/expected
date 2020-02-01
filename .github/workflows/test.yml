@@ -20,7 +20,7 @@ jobs:
           - { toolchain: beta    , os: ubuntu-18.04   }
           - { toolchain: nightly , os: ubuntu-18.04   }
           - { toolchain: 1.40.0  , os: ubuntu-18.04   } # minimum supported toolchain
-        # - { toolchain: stable  , os: macos-latest   }
+          - { toolchain: stable  , os: macos-latest   }
           - { toolchain: stable  , os: windows-latest }
 
     runs-on: ${{ matrix.conf.os }}
